@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Grade Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 80%;
+      }
+      th,
+      td {
+        border: 1px solid #999;
+        text-align: center;
+        padding: 8px;
+      }
+      th {
+        background-color: #cfe2f3;
+      }
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+      .readonly {
+        background-color: #f3f3f3;
+      }
+      .highlight {
+        background-color: #00ff00;
+        font-weight: bold;
+      }
+      #add-row-btn {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Grade Calculator</h2>
+    <table id="grades-table">
+      <thead>
+        <tr>
+          <th>Section</th>
+          <th>Percentage (%)</th>
+          <th>My Score</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody id="grade-body">
+        <tr>
+          <td><input type="text" placeholder="e.g. Exam 1" /></td>
+          <td><input type="number" step="0.01" class="percent" /></td>
+          <td><input type="number" step="0.01" class="score" /></td>
+          <td><input type="text" class="grade readonly" readonly /></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"><strong>Total Grade</strong></td>
+          <td>
+            <input
+              type="text"
+              id="total-grade"
+              class="highlight readonly"
+              readonly
+            />
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <button id="add-row-btn">Add Row</button>
+
+    <script>
+      function calculateGrades() {
+        const rows = document.querySelectorAll("#grade-body tr");
+        let total = 0;
+
+        rows.forEach((row) => {
+          const percentInput = row.querySelector(".percent");
+          const scoreInput = row.querySelector(".score");
+          const gradeInput = row.querySelector(".grade");
+
+          const percent = parseFloat(percentInput.value);
+          const score = parseFloat(scoreInput.value);
+
+          if (!isNaN(percent) && !isNaN(score)) {
+            const grade = (percent * score) / 100;
+            gradeInput.value = grade.toFixed(6);
+            total += grade;
+          } else {
+            gradeInput.value = "";
+          }
+        });
+
+        document.getElementById("total-grade").value = total.toFixed(6);
+      }
+
+      // Attach input event listeners
+      document
+        .getElementById("grade-body")
+        .addEventListener("input", calculateGrades);
+
+      // Add row button
+      document.getElementById("add-row-btn").addEventListener("click", () => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+        <td><input type="text" placeholder="e.g. New Section" /></td>
+        <td><input type="number" step="0.01" class="percent" /></td>
+        <td><input type="number" step="0.01" class="score" /></td>
+        <td><input type="text" class="grade readonly" readonly /></td>
+      `;
+        document.getElementById("grade-body").appendChild(row);
+      });
+    </script>
+  </body>
+</html>
